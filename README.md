@@ -39,7 +39,7 @@ Think of it as an **AI pentester** that works alongside you — it can scan auto
 
 ---
 
-### The Problem with Current AI Security Tools
+## The Problem with Current AI Security Tools
 
 AI is transforming cybersecurity, but today's tools come with serious trade-offs:
 
@@ -47,10 +47,10 @@ AI is transforming cybersecurity, but today's tools come with serious trade-offs
 
 | Tool | Pricing | Model |
 |------|---------|-------|
-| Pentera | $100,000+ / year | SaaS, closed source |
-| Horizon3.ai NodeZero | Enterprise pricing (custom quote) | Cloud-only |
-| XM Cyber | $50,000+ / year | SaaS |
-| Cobalt Strike + AI modules | $5,000+ / year per user | Licensed |
+| Tool 1 | $100,000+ / year | SaaS, closed source |
+| Tool 2 | Enterprise pricing (custom quote) | Cloud-only |
+| Tool 3 | $50,000+ / year | SaaS |
+| Tool 4 | $5,000+ / year per user | Licensed |
 
 Most teams — especially startups, independent researchers, and smaller security firms — simply can't afford these. PenPard costs **$0** and gives you full access to the source code.
 
@@ -85,13 +85,56 @@ PenPard gives you **full transparency**:
 
 ### Why PenPard?
 
-| Traditional Scanners | PenPard |
-|---|---|
-| Static rule-based checks | LLM-driven reasoning and adaptation |
-| Fixed payload lists | Context-aware payload generation |
-| Isolated scan results | Interactive chat with the AI agent during scans |
-| No learning between tests | Shared context between parallel agents |
-| One-size-fits-all | Custom prompts and testing strategies |
+| | Traditional Scanners | ChatGPT / AI Wrappers | Commercial AI Platforms | **PenPard** |
+|---|---|---|---|---|
+| **Cost** | $500-5,000/yr | API costs only | $50,000-200,000/yr | **Free & open source** |
+| **Actually executes attacks** | Yes (rule-based) | No (suggestions only) | Yes | **Yes (via Burp Suite)** |
+| **AI reasoning** | No | Yes (but no execution) | Yes | **Yes** |
+| **False positive reduction** | Moderate | Very poor | Good | **Recheck Agent validates every finding** |
+| **Your data stays local** | Sometimes | No (cloud API) | No (SaaS) | **Always — 100% local** |
+| **Transparency** | Limited | None | None | **Full logs, prompts, decisions visible** |
+| **Human-in-the-loop** | No | Manual | Limited | **Pause & Assist workflow** |
+| **Custom LLM provider** | N/A | Locked to vendor | Locked to vendor | **6 providers + any Ollama model** |
+| **Source code access** | No | No | No | **GPL-3.0** |
+| **Context-aware payloads** | No (fixed lists) | Yes (but untested) | Partially | **Yes — generated and tested** |
+
+### How PenPard Reduces False Positives
+
+One of the biggest problems in AI-assisted security testing is **hallucination** — the LLM confidently reports a vulnerability that doesn't actually exist. PenPard addresses this at multiple levels:
+
+```
+1. EXECUTION, NOT SPECULATION
+   └─ Agents send real HTTP requests through Burp → analyze actual responses
+      (not "this endpoint might be vulnerable based on the URL pattern")
+
+2. RECHECK AGENT
+   └─ Every suspected finding is re-tested with additional payloads
+   └─ LLM analyzes both the original and recheck responses
+   └─ Only confirmed findings are reported
+
+3. EVIDENCE-BASED REPORTING
+   └─ Each vulnerability includes the exact request/response pair
+   └─ CVSS 4.0 scoring based on actual impact, not guesswork
+
+4. HUMAN OVERSIGHT
+   └─ You see every decision in real-time
+   └─ You can intervene, correct, or redirect the AI at any time
+```
+
+### Cost Comparison: PenPard vs. Alternatives
+
+Running PenPard with different LLM providers (estimated cost per scan):
+
+| LLM Provider | Cost per Scan (avg) | Notes |
+|---|---|---|
+| **Ollama (local)** | **$0.00** | Run Llama 3, Mistral, etc. on your own hardware |
+| **DeepSeek V3** | ~$0.02-0.10 | Extremely cost-effective cloud option |
+| **GPT-4.1 mini** | ~$0.05-0.20 | Good balance of cost and performance |
+| **GPT-4.1** | ~$0.30-1.50 | Strong general performance |
+| **Claude 4 Sonnet** | ~$0.50-2.00 | Excellent reasoning |
+| **GPT-5.1** | ~$1.00-5.00 | Maximum capability |
+
+With token usage tracking built in, you always know exactly what you're spending. Compare this to $50,000+/year for commercial alternatives.
 
 ---
 
