@@ -294,18 +294,18 @@ export const addVulnerability = (data: {
 };
 
 // ── Scan Logs (persisted to DB) ──
-
-const insertLogStmt = db.prepare('INSERT INTO scan_logs (scan_id, message) VALUES (?, ?)');
-const insertLogsTransaction = db.transaction((scanId: string, messages: string[]) => {
-  for (const msg of messages) {
-    insertLogStmt.run(scanId, msg);
-  }
-});
+// Lazy-initialized prepared statements (tables may not exist at module load time)
 
 export const saveScanLogs = (scanId: string, logs: string[]) => {
   if (!logs || logs.length === 0) return;
   try {
-    insertLogsTransaction(scanId, logs);
+    const stmt = db.prepare('INSERT INTO scan_logs (scan_id, message) VALUES (?, ?)');
+    const insertMany = db.transaction((messages: string[]) => {
+      for (const msg of messages) {
+        stmt.run(scanId, msg);
+      }
+    });
+    insertMany(logs);
   } catch (e: any) {
     logger.error(`Failed to save scan logs: ${e.message}`);
   }
