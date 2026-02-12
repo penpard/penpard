@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/onurgule/penpard/releases"><img src="https://img.shields.io/github/v/release/penpard/penpard?style=flat-square&color=00f0ff" alt="Release" /></a>
+  <a href="https://github.com/onurgule/penpard/releases"><img src="https://img.shields.io/github/v/release/onurgule/penpard?style=flat-square&color=00f0ff" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square" alt="License" /></a>
-  <a href="https://github.com/onurgule/penpard/stargazers"><img src="https://img.shields.io/github/stars/penpard/penpard?style=flat-square&color=yellow" alt="Stars" /></a>
-  <a href="https://github.com/onurgule/penpard/issues"><img src="https://img.shields.io/github/issues/penpard/penpard?style=flat-square" alt="Issues" /></a>
+  <a href="https://github.com/onurgule/penpard/stargazers"><img src="https://img.shields.io/github/stars/onurgule/penpard?style=flat-square&color=yellow" alt="Stars" /></a>
+  <a href="https://github.com/onurgule/penpard/issues"><img src="https://img.shields.io/github/issues/onurgule/penpard?style=flat-square" alt="Issues" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/price-100%25%20FREE-brightgreen?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="Free" />
   <br/>
