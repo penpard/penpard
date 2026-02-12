@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/penpard/penpard/releases"><img src="https://img.shields.io/github/v/release/penpard/penpard?style=flat-square&color=00f0ff" alt="Release" /></a>
+  <a href="https://github.com/onurgule/penpard/releases"><img src="https://img.shields.io/github/v/release/penpard/penpard?style=flat-square&color=00f0ff" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square" alt="License" /></a>
-  <a href="https://github.com/penpard/penpard/stargazers"><img src="https://img.shields.io/github/stars/penpard/penpard?style=flat-square&color=yellow" alt="Stars" /></a>
-  <a href="https://github.com/penpard/penpard/issues"><img src="https://img.shields.io/github/issues/penpard/penpard?style=flat-square" alt="Issues" /></a>
+  <a href="https://github.com/onurgule/penpard/stargazers"><img src="https://img.shields.io/github/stars/penpard/penpard?style=flat-square&color=yellow" alt="Stars" /></a>
+  <a href="https://github.com/onurgule/penpard/issues"><img src="https://img.shields.io/github/issues/penpard/penpard?style=flat-square" alt="Issues" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/price-100%25%20FREE-brightgreen?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="Free" />
   <br/>
@@ -35,7 +35,7 @@
   <tr>
     <td align="center" width="320">
       <h4>Emrecan Gerede</h4>
-      <h5><a href="https://github.com/darkk9712">@dark9712</a></h5>
+      <h5><a href="https://github.com/emrecangerede">@emrecangerede</a></h5>
       <a href="https://linkedin.com/in/emrecangerede"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
       <br/><br/>
       <img src="https://img.shields.io/badge/OSCP-Certified-ED1C24?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggNHoiLz48L3N2Zz4=&logoColor=white" alt="OSCP"/>
@@ -43,7 +43,7 @@
     </td>
     <td align="center" width="320">
       <h4>Onur Osman Güle</h4>
-      <h5><a href="https://github.com/darkk9712">@onurgule</a></h5>
+      <h5><a href="https://github.com/onurgule">@onurgule</a></h5>
       <a href="https://linkedin.com/in/onurgule"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
       <br/><br/>
       <img src="https://img.shields.io/badge/OSCP-Certified-ED1C24?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggNHoiLz48L3N2Zz4=&logoColor=white" alt="OSCP"/>
