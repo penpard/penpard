@@ -199,3 +199,69 @@ General: info@penpard.com
 ---
 
 Thank you for contributing to PenPard! Together we're making security testing smarter and more accessible.
+
+---
+
+## Data Sanitization
+
+> **Critical — read before your first commit.**
+
+### Never include in a PR
+
+| Category | Examples |
+|---|---|
+| Pentest reports | `*.pdf`, `*.docx`, `*.doc` |
+| Network captures | `*.har`, `*.pcap`, `*.pcapng` |
+| Real target lists | Real FQDNs, IPs, customer / company domains |
+| Credentials / tokens | API keys, JWTs, cookies, secrets, passwords |
+| Private keys / certs | `*.pem`, `*.key`, `*.p12`, `*.pfx` |
+| Uploaded user files | `backend/uploads/**` |
+| Runtime logs | `backend/logs/**` |
+| Database files | `*.sqlite`, `*.db` |
+| Environment secrets | `.env`, `.env.production`, `.env.staging` |
+
+The `.gitignore` excludes all of the above. The pre-commit hook blocks accidental commits.
+
+### Install the pre-commit hook
+
+```bash
+# All platforms — preferred approach
+git config core.hooksPath .githooks
+
+# Linux/macOS only — make executable
+chmod +x .githooks/pre-commit
+```
+
+### Use safe placeholder data in all tests, fixtures, and comments
+
+**Domains (RFC 2606 — permanently reserved, never route to real hosts):**
+```
+example.com  |  test.example.org  |  api.example.net
+```
+
+**IP ranges (RFC 5737 — documentation-only, never routed):**
+```
+192.0.2.0/24     TEST-NET-1
+198.51.100.0/24  TEST-NET-2
+203.0.113.0/24   TEST-NET-3
+```
+
+**Example safe target list fixture:**
+```
+https://example.com
+https://api.example.net/actuator/heapdump
+192.0.2.1
+198.51.100.42:8080/login
+```
+
+Real company or customer domains — even in comments or self-tests — must not appear in the codebase. Replace any real domain references with `example.com`.
+
+### Updated PR Checklist
+
+- [ ] `npx tsc --noEmit` passes on `backend/` and `frontend/`
+- [ ] No real domains, IPs, API keys, or tokens in the diff
+- [ ] No `*.pdf`, `*.docx`, `*.har`, `*.sqlite`, or `*.env` files staged
+- [ ] All text (comments, logs, UI strings) is in English
+- [ ] Pre-commit hook passed without warnings
+- [ ] Safe fixtures (RFC 2606/5737) used for any sample data
+

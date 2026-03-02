@@ -79,3 +79,84 @@ The backend also creates an internal `operator` user (used for scan ownership). 
 ## Acknowledgments
 
 We appreciate the security research community's efforts in helping keep PenPard secure. Reporters of valid vulnerabilities will be acknowledged here (with permission).
+
+---
+
+## Data Handling Policy: What Must Never Be Committed
+
+PenPard processes real pentest reports and sensitive engagement data. The following **must never be committed** to this repository:
+
+| Category | Examples |
+|---|---|
+| Pentest reports | `*.pdf`, `*.docx`, `*.doc` |
+| Network captures | `*.har`, `*.pcap`, `*.pcapng` |
+| Real target lists | Files containing real FQDNs, IPs, customer domains |
+| Credentials / tokens | API keys, JWTs, session cookies, passwords |
+| Private keys / certs | `*.pem`, `*.key`, `*.p12`, `*.pfx` |
+| Uploaded user files | Anything under `backend/uploads/` |
+| Runtime logs | Anything under `backend/logs/` |
+| Database files | `*.sqlite`, `*.db` |
+| Environment secrets | `.env`, `.env.production`, `.env.staging` |
+
+All of the above are excluded by `.gitignore`.
+
+### Pre-commit Protection
+
+A pre-commit hook is bundled in `.githooks/` to block accidental commits.
+
+**Install (recommended — applies to all clones):**
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit   # Linux/macOS only
+```
+
+**Manual install:**
+```bash
+# Linux/macOS
+cp .githooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Windows PowerShell
+Copy-Item .githooks\pre-commit.ps1 .git\hooks\pre-commit.ps1
+```
+
+### Safe Fixtures for Tests and Documentation
+
+Always use RFC-reserved domains and IPs in code, tests, and comments:
+
+**Safe domains (RFC 2606):**
+```
+example.com  |  test.example.org  |  api.example.net
+```
+
+**Safe IP ranges (RFC 5737 — documentation-only, never routed):**
+```
+192.0.2.0/24   (TEST-NET-1)
+198.51.100.0/24 (TEST-NET-2)
+203.0.113.0/24  (TEST-NET-3)
+```
+
+### Removing Accidentally Committed Sensitive Files
+
+```bash
+# Install: pip install git-filter-repo
+
+# Purge all PDF and DOCX files from full history
+git filter-repo --path-glob '*.pdf' --invert-paths
+git filter-repo --path-glob '*.docx' --invert-paths
+
+# Force-push all branches and tags
+git push origin --force --all
+git push origin --force --tags
+```
+
+All collaborators must re-clone after a history rewrite:
+```bash
+git clone <repo-url>
+```
+
+**Alternate (BFG Repo Cleaner):**
+```bash
+java -jar bfg.jar --delete-files "*.{pdf,docx,har,pcap}" repo.git
+cd repo.git && git reflog expire --expire=now --all && git gc --prune=now --aggressive
+git push origin --force --all
+```
+

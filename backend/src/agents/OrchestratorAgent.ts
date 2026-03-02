@@ -17,6 +17,7 @@ import { logger, formatLogTimestamp } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs';
+import { mindsetService, MindsetTTP } from '../services/mindset-service';
 
 type AgentPhase = 'planning' | 'executing' | 'replanning' | 'reporting' | 'completed' | 'failed' | 'stopped';
 
@@ -34,6 +35,8 @@ interface ScanConfig {
     sessionCookies?: string;
     /** Raw HTTP request from Burp "Send to PenPard" — agent must test this request with its exact headers and body first. */
     initialRequest?: string;
+    /** Enable mindset library — load learned TTPs from past report analyses into planning. Default true. */
+    useMindsetLibrary?: boolean;
 }
 
 interface ToolCall {
@@ -271,6 +274,11 @@ CURRENT STATE:
 - Endpoints discovered: {ENDPOINTS_SUMMARY}
 - Previous plan results: {PREVIOUS_RESULTS}
 
+LEARNED ATTACK PATTERNS (from past Red Team reports):
+{MINDSET_TTPS}
+If any learned patterns match discovered endpoints or parameters, PRIORITIZE testing them.
+Include the TTP id in your thought when a step is derived from a learned pattern.
+
 RULES:
 1. **OPERATOR INSTRUCTIONS ARE LAW.** If operator instructions specify endpoints, vulnerability types, or scope — your ENTIRE plan MUST stay within those boundaries. Do NOT test anything outside the operator's scope. Do NOT do general recon if the operator told you exactly what to test.
 2. If operator instructions specify exact endpoints and vuln types → Skip discovery. Go DIRECTLY to testing those endpoints for those vulns in Round 1. Every step should be an attack on the specified scope.
@@ -376,6 +384,9 @@ export class OrchestratorAgent {
         auto_finish: boolean;
         summary: string;
     } | null = null;
+
+    // Mindset library — loaded TTPs from past report analyses
+    private mindsetTTPs: MindsetTTP[] = [];
 
     constructor(scanId: string, targetUrl: string, config: ScanConfig, burp: BurpMCPClient) {
         this.scanId = scanId;
@@ -871,6 +882,21 @@ Proceed with testing.`
         }
         this.log('system', '✓ LLM: Connected');
 
+        // Load mindset library TTPs from past report analyses
+        if (this.config.useMindsetLibrary !== false) {
+            try {
+                this.mindsetTTPs = mindsetService.getRelevantTTPs(this.targetUrl);
+                if (this.mindsetTTPs.length > 0) {
+                    this.log('system', `📚 Mindset Library: Loaded ${this.mindsetTTPs.length} TTPs from past reports`);
+                } else {
+                    this.log('system', '📚 Mindset Library: No TTPs available (upload red team reports to build library)');
+                }
+            } catch (e: any) {
+                this.log('error', `Failed to load mindset library: ${e.message}`);
+                this.mindsetTTPs = [];
+            }
+        }
+
         // Resolve session cookies and auth for authenticated testing (from operator input or proxy history, newest to oldest)
         let sessionCookieHeader = '';
         let sessionAuthHeader = '';
@@ -1315,7 +1341,10 @@ Start by sending the original request as-is to get a baseline response, then beg
                 .replace('{FINDINGS_COUNT}', String(this.findings.length))
                 .replace('{ENDPOINTS_SUMMARY}', endpointsSummary)
                 .replace('{PREVIOUS_RESULTS}', previousResults)
-                .replace('{OPERATOR_INSTRUCTIONS_REMINDER}', this.getOperatorInstructionsReminder());
+                .replace('{OPERATOR_INSTRUCTIONS_REMINDER}', this.getOperatorInstructionsReminder())
+                .replace('{MINDSET_TTPS}', this.mindsetTTPs.length > 0
+                    ? mindsetService.formatTTPsForPlanning(this.mindsetTTPs)
+                    : 'None loaded — no past reports analyzed yet.');
 
             this.conversationHistory.push({ role: 'user', content: planPrompt });
 

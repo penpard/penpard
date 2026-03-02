@@ -8,15 +8,21 @@ node_modules/
 dist/
 build/
 out/
+dist-electron/
+release/
 
-# Environment files
+# Environment files  — NEVER commit real secrets
 .env
 .env.local
 .env.development
 .env.production
+.env.staging
 .env.*.local
+# Allow example/template env files
+!.env.example
+!.env.sample
 
-# Database
+# Database files
 data/*.db
 data/*.db-shm
 data/*.db-wal
@@ -25,10 +31,54 @@ data/*.db-journal
 **/data/*.db-shm
 **/data/*.db-wal
 **/data/*.db-journal
+*.sqlite
+*.sqlite3
 
 # Logs
 *.log
 logs/
+backend/logs/
+
+# ─────────────────────────────────────────────────────────────────────
+# SENSITIVE: Pentest reports, captures, credentials — NEVER COMMIT
+# Upload through the PenPard UI; store outside the repo.
+# ─────────────────────────────────────────────────────────────────────
+
+# Pentest report files
+*.pdf
+*.docx
+*.doc
+*.odt
+*.rtf
+
+# Network captures / HTTP archives
+*.har
+*.pcap
+*.pcapng
+*.cap
+
+# Uploaded files and generated output
+uploads/
+backend/uploads/
+backend/reports/
+backend/screenshots/
+reports/
+samples/
+data/sensitive/
+fixtures/real/
+
+# Certificate and private key files
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.keystore
+*.jks
+
+# ─────────────────────────────────────────────────────────────────────
 
 # Python
 *.pyc
@@ -38,36 +88,24 @@ __pycache__/
 .DS_Store
 Thumbs.db
 Desktop.ini
+desktop.ini
 
 # IDE
 .idea/
-.vscode/
+.vscode/settings.json
 *.swp
 *.swo
 *~
 
-# Coverage
+# Coverage / test output
 coverage/
 .nyc_output/
-
-# Generated files
-*.pdf
-uploads/
-
-# Generated scan artifacts
-backend/reports/
-backend/screenshots/
+test-results/
+playwright-report/
 
 # TypeScript build cache
 *.tsbuildinfo
 
-# SQLite (extra safety)
-*.sqlite
-*.sqlite3
-
 # Gradle (Burp extension)
 .gradle/
 burp-extension/build/
-
-# Electron
-release/

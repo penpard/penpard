@@ -17,6 +17,8 @@ import analyticsRoutes from './routes/analytics';
 import activityMonitorRoutes from './routes/activity-monitor';
 import tokenUsageRoutes from './routes/token-usage';
 import penpardRoutes from './routes/penpard';
+import reportAnalysisRoutes from './routes/report-analysis';
+import presenceScanRoutes from './routes/presence-scan';
 
 // Load environment variables
 dotenv.config();
@@ -75,6 +77,8 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/activity-monitor', activityMonitorRoutes);
 app.use('/api/token-usage', tokenUsageRoutes);
 app.use('/api/penpard', penpardRoutes);
+app.use('/api/report-analysis', reportAnalysisRoutes);
+app.use('/api/presence-scan', presenceScanRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

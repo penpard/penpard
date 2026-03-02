@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, ChevronLeft, ChevronRight, Settings, Zap, Shield, Activity, Server, Wifi, WifiOff } from 'lucide-react';
+import { Home, ChevronLeft, ChevronRight, Settings, Zap, Shield, Activity, Server, Wifi, WifiOff, FileSearch, Crosshair } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/lib/store/auth';
 import { API_URL } from '@/lib/api-config';
@@ -109,16 +109,14 @@ export default function BottomNavigation() {
         icon: React.ElementType;
         color: string;
     }) => (
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${
-            online
-                ? `bg-${color}-500/10 border border-${color}-500/20 text-${color}-400`
-                : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
-        }`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${online
+            ? `bg-${color}-500/10 border border-${color}-500/20 text-${color}-400`
+            : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
+            }`}>
             <div className="relative">
                 <Icon className="w-3 h-3" />
-                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${
-                    online ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
-                }`} />
+                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${online ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
+                    }`} />
             </div>
             <span>{label}</span>
         </div>
@@ -143,53 +141,46 @@ export default function BottomNavigation() {
                     {/* Service Status Chips */}
                     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
                         {/* Using inline styles for dynamic colors since Tailwind can't JIT arbitrary values */}
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${
-                            llmOnline
-                                ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
-                                : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
-                        }`}>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${llmOnline
+                            ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+                            : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
+                            }`}>
                             <div className="relative">
                                 <Zap className="w-3 h-3" />
-                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${
-                                    llmOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
-                                }`} />
+                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${llmOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
+                                    }`} />
                             </div>
                             <span>{llmLabel}</span>
                         </div>
 
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${
-                            burpOnline
-                                ? 'bg-orange-500/10 border border-orange-500/20 text-orange-400'
-                                : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
-                        }`}>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${burpOnline
+                            ? 'bg-orange-500/10 border border-orange-500/20 text-orange-400'
+                            : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
+                            }`}>
                             <div className="relative">
                                 <Shield className="w-3 h-3" />
-                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${
-                                    burpOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
-                                }`} />
+                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${burpOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
+                                    }`} />
                             </div>
                             <span>BURP</span>
                         </div>
 
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${
-                            mobsfOnline
-                                ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400'
-                                : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
-                        }`}>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${mobsfOnline
+                            ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400'
+                            : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
+                            }`}>
                             <div className="relative">
                                 <Activity className="w-3 h-3" />
-                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${
-                                    mobsfOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
-                                }`} />
+                                <div className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-black ${mobsfOnline ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.6)]' : 'bg-gray-600'
+                                    }`} />
                             </div>
                             <span>MOBSF</span>
                         </div>
 
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${
-                            (status?.mcp?.active ?? 0) > 0
-                                ? 'bg-purple-500/10 border border-purple-500/20 text-purple-400'
-                                : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
-                        }`}>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all duration-300 ${(status?.mcp?.active ?? 0) > 0
+                            ? 'bg-purple-500/10 border border-purple-500/20 text-purple-400'
+                            : 'bg-gray-800/50 border border-gray-700/30 text-gray-600'
+                            }`}>
                             <Server className="w-3 h-3" />
                             <span>MCP {mcpCount}</span>
                         </div>
@@ -211,9 +202,8 @@ export default function BottomNavigation() {
                     <button
                         onClick={handleBack}
                         disabled={!canGoBack}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${
-                            canGoBack ? 'text-gray-400 hover:text-white active:scale-90' : 'text-gray-700 cursor-not-allowed'
-                        }`}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${canGoBack ? 'text-gray-400 hover:text-white active:scale-90' : 'text-gray-700 cursor-not-allowed'
+                            }`}
                     >
                         <ChevronLeft className="w-5 h-5" />
                         <span className="text-[9px] mt-0.5">Back</span>
@@ -221,9 +211,8 @@ export default function BottomNavigation() {
 
                     <button
                         onClick={handleHome}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${
-                            isActive('/dashboard') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
-                        }`}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${isActive('/dashboard') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
+                            }`}
                     >
                         <Home className="w-5 h-5" />
                         <span className="text-[9px] mt-0.5">Home</span>
@@ -232,19 +221,35 @@ export default function BottomNavigation() {
                     <button
                         onClick={handleForward}
                         disabled={!canGoForward}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${
-                            canGoForward ? 'text-gray-400 hover:text-white active:scale-90' : 'text-gray-700 cursor-not-allowed'
-                        }`}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${canGoForward ? 'text-gray-400 hover:text-white active:scale-90' : 'text-gray-700 cursor-not-allowed'
+                            }`}
                     >
                         <ChevronRight className="w-5 h-5" />
                         <span className="text-[9px] mt-0.5">Forward</span>
                     </button>
 
                     <button
+                        onClick={() => router.push('/analyze-report')}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${pathname?.startsWith('/analyze-report') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
+                            }`}
+                    >
+                        <FileSearch className="w-5 h-5" />
+                        <span className="text-[9px] mt-0.5">Analyze</span>
+                    </button>
+
+                    <button
+                        onClick={() => router.push('/presence-scan')}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${pathname?.startsWith('/presence-scan') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
+                            }`}
+                    >
+                        <Crosshair className="w-5 h-5" />
+                        <span className="text-[9px] mt-0.5">Scan</span>
+                    </button>
+
+                    <button
                         onClick={handleSettings}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${
-                            isActive('/settings') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
-                        }`}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all active:scale-90 ${isActive('/settings') ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
+                            }`}
                     >
                         <Settings className="w-5 h-5" />
                         <span className="text-[9px] mt-0.5">Settings</span>
