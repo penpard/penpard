@@ -269,6 +269,18 @@ export async function initDatabase(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_mindset_ttps_analysis ON mindset_ttps(source_analysis_id);
     CREATE INDEX IF NOT EXISTS idx_mindset_ttps_class ON mindset_ttps(vulnerability_class);
 
+    -- TTP Test Playbook cache (AI-generated testing guides)
+    CREATE TABLE IF NOT EXISTS ttp_test_playbooks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ttp_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      model TEXT,
+      tokens INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (ttp_id) REFERENCES mindset_ttps(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_ttp_playbooks_ttp ON ttp_test_playbooks(ttp_id);
+
     -- Presence Scan Runs
     CREATE TABLE IF NOT EXISTS presence_scan_runs (
       id TEXT PRIMARY KEY,
@@ -715,4 +727,14 @@ export const addPresenceScanRunTTP = (runId: string, ttpId: string, ttpTitle?: s
 
 export const getPresenceScanRunTTPs = (runId: string): { ttp_id: string; ttp_title: string | null }[] => {
   return db.prepare('SELECT ttp_id, ttp_title FROM presence_scan_run_ttps WHERE run_id = ? ORDER BY id ASC').all(runId) as any[];
+};
+
+// ── TTP Test Playbook Cache ──
+
+export const getCachedPlaybook = (ttpId: string): { content: string; model: string; tokens: number; created_at: string } | undefined => {
+  return db.prepare('SELECT content, model, tokens, created_at FROM ttp_test_playbooks WHERE ttp_id = ? ORDER BY created_at DESC LIMIT 1').get(ttpId) as any;
+};
+
+export const cachePlaybook = (ttpId: string, content: string, model: string, tokens: number) => {
+  db.prepare('INSERT INTO ttp_test_playbooks (ttp_id, content, model, tokens) VALUES (?, ?, ?, ?)').run(ttpId, content, model, tokens);
 };

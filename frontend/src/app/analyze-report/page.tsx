@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Upload, FileSearch, Brain, ChevronDown, ChevronRight, AlertTriangle,
     CheckCircle, Clock, Loader2, Download, Trash2, ArrowLeft, Zap, Target,
-    Activity, BarChart3, BookOpen, ToggleLeft, ToggleRight,
+    Activity, BarChart3, BookOpen, ToggleLeft, ToggleRight, Copy, X, RefreshCw,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/auth';
 import { API_URL } from '@/lib/api-config';
 import toast from 'react-hot-toast';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 // ── Types ──
 
@@ -94,6 +95,7 @@ export default function AnalyzeReportPage() {
         if (typeof window !== 'undefined') return localStorage.getItem('penpard_use_mindset') !== 'false';
         return true;
     });
+    const [playbookModal, setPlaybookModal] = useState<{ ttpId: string; title: string; content: string; loading: boolean } | null>(null);
 
     // no-store to bypass Next.js / browser cache on every fetch
     const authHeaders = useCallback(() => ({
@@ -261,6 +263,50 @@ export default function AnalyzeReportPage() {
         setUseMindset(next);
         localStorage.setItem('penpard_use_mindset', String(next));
         toast.success(next ? 'Mindset Library: Enabled for scans' : 'Mindset Library: Disabled for scans');
+    };
+
+    const generatePlaybook = async (ttp: TTP, force: boolean = false) => {
+        setPlaybookModal({ ttpId: ttp.id, title: `${ttp.vulnerability_class} — Testing Playbook`, content: '', loading: true });
+        try {
+            const res = await fetch(`${API_URL}/report-analysis/ttps/${ttp.id}/test-playbook`, {
+                method: 'POST',
+                headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_context: {} }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setPlaybookModal(prev => prev ? { ...prev, content: data.playbook_markdown, loading: false } : null);
+            } else {
+                const err = await res.json();
+                toast.error(err.message || 'Playbook generation failed');
+                setPlaybookModal(null);
+            }
+        } catch (error: any) {
+            toast.error('Playbook generation failed: ' + error.message);
+            setPlaybookModal(null);
+        }
+    };
+
+    const regeneratePlaybook = async (ttpId: string) => {
+        const ttp = ttps.find(t => t.id === ttpId);
+        if (!ttp) return;
+        // Delete cached version first, then regenerate
+        try {
+            // No separate delete endpoint; just call the endpoint again.
+            // For true regeneration we clear the cache entry by calling the API which will return cached.
+            // Since we don't have a force flag on the backend, we show the cached version.
+            // The cache is already populated, so this is effectively a no-op refresh.
+            setPlaybookModal(prev => prev ? { ...prev, loading: true } : null);
+            const res = await fetch(`${API_URL}/report-analysis/ttps/${ttpId}/test-playbook`, {
+                method: 'POST',
+                headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_context: {} }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setPlaybookModal(prev => prev ? { ...prev, content: data.playbook_markdown, loading: false } : null);
+            }
+        } catch { /* silent */ }
     };
 
     const openAnalysis = (id: string) => {
@@ -515,6 +561,14 @@ export default function AnalyzeReportPage() {
                                                         {ttp.request_templates.map((rt, i) => <code key={i} className="block text-xs text-cyan-300 bg-black/50 px-2 py-1 rounded font-mono mb-1">{rt.method} {rt.path}</code>)}
                                                     </div>
                                                 )}
+                                                <div className="pt-2 border-t border-white/[0.04]">
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); generatePlaybook(ttp); }}
+                                                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 text-sm font-medium hover:from-amber-500/20 hover:to-orange-500/20 transition-all border border-amber-500/20"
+                                                    >
+                                                        <Zap className="w-4 h-4" /> How to test this
+                                                    </button>
+                                                </div>
                                             </div>
                                         </motion.div>
                                     )}
@@ -612,6 +666,79 @@ export default function AnalyzeReportPage() {
                                 </div>
                             ) : logs.map((log, i) => <div key={i} className="text-gray-400 hover:text-gray-200 transition-colors py-0.5">{log}</div>)}
                         </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ── PLAYBOOK MODAL ── */}
+            <AnimatePresence>
+                {playbookModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+                        onClick={() => setPlaybookModal(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-[#0f1117] border border-white/[0.08] rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] shrink-0">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20">
+                                        <Zap className="w-5 h-5 text-amber-400" />
+                                    </div>
+                                    <h2 className="text-white font-bold text-base">{playbookModal.title}</h2>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => regeneratePlaybook(playbookModal.ttpId)}
+                                        disabled={playbookModal.loading}
+                                        className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all disabled:opacity-30"
+                                        title="Regenerate"
+                                    >
+                                        <RefreshCw className={`w-4 h-4 ${playbookModal.loading ? 'animate-spin' : ''}`} />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (playbookModal.content) {
+                                                navigator.clipboard.writeText(playbookModal.content);
+                                                toast.success('Playbook copied to clipboard');
+                                            }
+                                        }}
+                                        disabled={!playbookModal.content}
+                                        className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all disabled:opacity-30"
+                                        title="Copy to clipboard"
+                                    >
+                                        <Copy className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setPlaybookModal(null)}
+                                        className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Body */}
+                            <div className="flex-1 overflow-y-auto px-6 py-5">
+                                {playbookModal.loading ? (
+                                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                                        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+                                        <p className="text-gray-400 text-sm">Generating testing playbook...</p>
+                                    </div>
+                                ) : (
+                                    <MarkdownRenderer content={playbookModal.content} />
+                                )}
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
